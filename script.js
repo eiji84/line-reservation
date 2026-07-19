@@ -1,7 +1,8 @@
 const LIFF_ID = "2010754159-BAb84dhl";
-const MAKE_WEBHOOK =
-    "https://hook.us2.make.com/ihrg6c2vcmqsfuqyyfkrd7b9ljyoaf43";
-const AVAILABILITY_WEBHOOK = "https://hook.us2.make.com/6ouwf86mr7smog1jy6hp671l84v9sd23";
+const MAKE_WEBHOOK = "https://hook.us2.make.com/ihrg6c2vcmqsfuqyyfkrd7b9ljyoaf43";
+
+// 空き状況確認は、カレンダー復旧後に設定します
+const AVAILABILITY_WEBHOOK = "";
 
 let selectedDate = "";
 let selectedTime = "";
@@ -28,7 +29,11 @@ async function main() {
             reserveButtonClicked;
 
     } catch (error) {
-        console.error(error);
+        console.error("LIFF initialization error:", error);
+
+        document.getElementById("name").textContent =
+            "初期化に失敗しました";
+
         alert("初期化に失敗しました: " + error.message);
     }
 }
@@ -36,12 +41,15 @@ async function main() {
 function createCalendar() {
     const calendarEl = document.getElementById("calendar");
 
+    if (!calendarEl) {
+        console.error("calendar element was not found");
+        return;
+    }
+
     const calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: "dayGridMonth",
         locale: "ja",
-
         height: "auto",
-        contentHeight: "auto",
 
         headerToolbar: {
             left: "prev",
@@ -69,18 +77,6 @@ function createCalendar() {
 }
 
 function showTimes() {
-    const response = await fetch(AVAILABILITY_WEBHOOK, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            date: date
-        })
-    });
-
-    console.log(await response.text());
-    
     const div = document.getElementById("times");
 
     div.innerHTML = "";
@@ -146,13 +142,13 @@ async function reserveButtonClicked() {
         });
 
         if (!response.ok) {
-            throw new Error("HTTP error: " + response.status);
+            throw new Error("HTTP status: " + response.status);
         }
 
         alert("予約データを送信しました！");
 
     } catch (error) {
-        console.error(error);
+        console.error("Reservation error:", error);
         alert("送信に失敗しました: " + error.message);
     }
 }
