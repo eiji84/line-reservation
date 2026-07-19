@@ -74,26 +74,6 @@ function createCalendar() {
     calendar.render();
 }
 
-async function sendSelectedDateToMake(date) {
-    try {
-        const response = await fetch(AVAILABILITY_WEBHOOK, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                date: date
-            })
-        });
-
-        console.log("Availability webhook status:", response.status);
-        console.log("Availability webhook response:", await response.text());
-
-    } catch (error) {
-        console.error("Availability webhook error:", error);
-    }
-}
-
 function showTimes() {
     const div = document.getElementById("times");
 
@@ -128,6 +108,26 @@ function showTimes() {
 
         div.appendChild(button);
     });
+}
+
+async function sendSelectedDateToMake(date) {
+    try {
+        const response = await fetch(AVAILABILITY_WEBHOOK, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                date: date
+            })
+        });
+
+        console.log("Availability webhook status:", response.status);
+        console.log("Availability webhook response:", await response.text());
+
+    } catch (error) {
+        console.error("Availability webhook error:", error);
+    }
 }
 
 async function reserveButtonClicked() {
