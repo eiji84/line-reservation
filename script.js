@@ -55,7 +55,7 @@ function createCalendar() {
             right: "next"
         },
 
-        dateClick: function (info) {
+        dateClick: async function (info) {
             selectedDate = info.dateStr;
             selectedTime = "";
         
@@ -66,8 +66,9 @@ function createCalendar() {
                 });
         
             info.dayEl.classList.add("fc-day-selected");
+        
             await sendSelectedDateToMake(info.dateStr);
-            
+        
             showTimes();
         }
     });
