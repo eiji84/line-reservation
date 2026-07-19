@@ -1,6 +1,6 @@
 const LIFF_ID = "2010754159-BAb84dhl";
 const MAKE_WEBHOOK = "https://hook.us2.make.com/ihrg6c2vcmqsfuqyyfkrd7b9ljyoaf43";
-const AVAILABILITY_WEBHOOK = "https://hook.us2.make.com/m7co74ekv1gbzf06edeyw7262n6r01zb";
+const AVAILABILITY_WEBHOOK = "https://script.google.com/macros/s/AKfycbyvmtubjG42TQbydRYlsIlcw92kz1snWWhpkcuQbzUdHbgb892AfKjxD8eI2fPWwH3M/exec";
 
 let selectedDate = "";
 let selectedTime = "";
@@ -67,19 +67,17 @@ function createCalendar() {
         
             info.dayEl.classList.add("fc-day-selected");
         
-            await sendSelectedDateToMake(info.dateStr);
-        
-            showTimes();
+            await showTimes(info.dateStr);
         }
     });
 
     calendar.render();
 }
 
-function showTimes() {
+async function showTimes(date) {
     const div = document.getElementById("times");
 
-    div.innerHTML = "";
+    div.innerHTML = "空き状況を確認しています…";
 
     const times = [
         "10:00",
@@ -87,29 +85,92 @@ function showTimes() {
         "11:00",
         "13:00",
         "13:30",
-        "14:00"
+        "14:00",
+        "14:30",
+        "15:00",
+        "15:30",
+        "16:00",
+        "16:30"
     ];
 
-    times.forEach(function (time) {
-        const button = document.createElement("button");
+    try {
+        const url =
+            AVAILABILITY_API
+            + "?date="
+            + encodeURIComponent(date);
 
-        button.className = "timeButton";
-        button.textContent = time;
+        const response = await fetch(url);
 
-        button.onclick = function () {
-            selectedTime = time;
+        if (!response.ok) {
+            throw new Error("HTTP status: " + response.status);
+        }
 
-            document
-                .querySelectorAll(".timeButton")
-                .forEach(function (element) {
-                    element.classList.remove("selected");
-                });
+        const result = await response.json();
 
-            button.classList.add("selected");
-        };
+        if (!result.success) {
+            throw new Error(result.message || "空き状況を取得できませんでした");
+        }
 
-        div.appendChild(button);
-    });
+        const reservedTimes = result.reservedTimes || [];
+
+        div.innerHTML = "";
+
+        times.forEach(function (time) {
+            const button = document.createElement("button");
+
+            button.className = "timeButton";
+
+            if (reservedTimes.includes(time)) {
+                button.textContent = time + " 予約済み";
+                button.disabled = true;
+                button.classList.add("reserved");
+            } else {
+                button.textContent = time;
+
+                button.onclick = function () {
+                    selectedTime = time;
+
+                    document
+                        .querySelectorAll(".timeButton")
+                        .forEach(function (element) {
+                            element.classList.remove("selected");
+                        });
+
+                    button.classList.add("selected");
+                };
+            }
+
+            div.appendChild(button);
+        });
+
+    } catch (error) {
+        console.error("Availability error:", error);
+
+        div.innerHTML = "";
+
+        times.forEach(function (time) {
+            const button = document.createElement("button");
+
+            button.className = "timeButton";
+            button.textContent = time;
+
+            button.onclick = function () {
+                selectedTime = time;
+
+                document
+                    .querySelectorAll(".timeButton")
+                    .forEach(function (element) {
+                        element.classList.remove("selected");
+                    });
+
+                button.classList.add("selected");
+            };
+
+            div.appendChild(button);
+        });
+
+        alert("空き状況を取得できませんでした");
+    }
 }
 
 async function reserveButtonClicked() {
