@@ -49,19 +49,19 @@ function createCalendar() {
             right: "next"
         },
 
-        dateClick: async function (info) {
+        dateClick: function (info) {
             selectedDate = info.dateStr;
             selectedTime = "";
-        
+
             document
                 .querySelectorAll(".fc-day-selected")
                 .forEach(function (element) {
                     element.classList.remove("fc-day-selected");
                 });
-        
+
             info.dayEl.classList.add("fc-day-selected");
-        
-            await showTimes(info.dateStr);
+
+            showTimes();
         }
     });
 
