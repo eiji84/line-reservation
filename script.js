@@ -66,7 +66,8 @@ function createCalendar() {
                 });
         
             info.dayEl.classList.add("fc-day-selected");
-        
+            await sendSelectedDateToMake(info.dateStr);
+            
             showTimes();
         }
     });
