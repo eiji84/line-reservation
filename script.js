@@ -1,6 +1,6 @@
 const LIFF_ID = "2010756015-4y67hcuv";
 const MAKE_WEBHOOK = "https://hook.us2.make.com/yo6ya114muifricx2pudtnvhlmd0i234";
-const AVAILABILITY_API = "https://script.google.com/macros/s/AKfycbxKIml_ONRqHZvG-FufjyszjETS5sWlAKbFdLcaJnyrpOLiK2lmHMAfZnx5d4Hs62c/exec";
+const AVAILABILITY_API = "https://script.google.com/macros/s/AKfycbw5ahtqyj3hydAo6J1eLulSG6nYTzWq6ssjSfF_BoyCE4Sy2lgk0v5TcSexVpAFLnwg/exec";
 
 let selectedDate = "";
 let selectedTime = "";
