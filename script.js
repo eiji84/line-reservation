@@ -1,6 +1,5 @@
 const LIFF_ID = "2010754159-BAb84dhl";
 const MAKE_WEBHOOK = "https://hook.us2.make.com/ihrg6c2vcmqsfuqyyfkrd7b9ljyoaf43";
-const AVAILABILITY_WEBHOOK = "https://hook.us2.make.com/m7co74ekv1gbzf06edeyw7262n6r01zb";
 
 let selectedDate = "";
 let selectedTime = "";
