@@ -1,6 +1,6 @@
 const LIFF_ID = "2010754159-BAb84dhl";
 const MAKE_WEBHOOK = "https://hook.us2.make.com/ihrg6c2vcmqsfuqyyfkrd7b9ljyoaf43";
-
+const AVAILABILITY_WEBHOOK = "https://hook.us2.make.com/m7co74ekv1gbzf06edeyw7262n6r01zb";
 // 空き状況確認は、カレンダー復旧後に設定します
 const AVAILABILITY_WEBHOOK = "";
 
@@ -57,23 +57,45 @@ function createCalendar() {
             right: "next"
         },
 
-        dateClick: function (info) {
+        dateClick: async function (info) {
             selectedDate = info.dateStr;
             selectedTime = "";
-
+        
             document
                 .querySelectorAll(".fc-day-selected")
                 .forEach(function (element) {
                     element.classList.remove("fc-day-selected");
                 });
-
+        
             info.dayEl.classList.add("fc-day-selected");
-
+        
+            await sendSelectedDateToMake(info.dateStr);
+        
             showTimes();
         }
     });
 
     calendar.render();
+}
+
+async function sendSelectedDateToMake(date) {
+    try {
+        const response = await fetch(AVAILABILITY_WEBHOOK, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                date: date
+            })
+        });
+
+        console.log("Availability webhook status:", response.status);
+        console.log("Availability webhook response:", await response.text());
+
+    } catch (error) {
+        console.error("Availability webhook error:", error);
+    }
 }
 
 function showTimes() {
